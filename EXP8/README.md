@@ -1,238 +1,168 @@
-# Experiment 8 — Normalization from 1NF to 5NF
+# Expected output
 
-## Aim
+## Step 6
 
-To create normalized Oracle tables for 1NF, 2NF, 3NF, 4NF, and 5NF and verify their relationships.
+| SID | SName | Course | Faculty | FacultyPhone | Dept | HOD |
+| --- | --- | --- | --- | --- | --- | --- |
+| S1 | Arun | DBMS | Ravi | 9990001 | CSE | Dr. Sharma |
+| S1 | Arun | OS | Meena | 9990002 | CSE | Dr. Sharma |
+| S2 | Bala | DBMS | Ravi | 9990001 | CSE | Dr. Sharma |
 
-## Program
+## Step 27
 
-**Environment:** Oracle Database / SQL*Plus.
+| Course | Faculty | FacultyPhone | Dept | HOD |
+| --- | --- | --- | --- | --- |
+| DBMS | Ravi | 9990001 | CSE | Dr. Sharma |
+| OS | Meena | 9990002 | CSE | Dr. Sharma |
 
-Run in a fresh Oracle schema. The 2NF example assumes Course determines Faculty. The 4NF example assumes courses and languages are independent. The 5NF example assumes the three pairwise projections form a lossless join.
+## Step 47
 
-```sql
--- Step 1
-CREATE TABLE StudentCourse_1NF (
-    SID           VARCHAR2(10),
-    SName         VARCHAR2(30),
-    Course        VARCHAR2(20),
-    Faculty       VARCHAR2(30),
-    FacultyPhone  VARCHAR2(15),
-    Dept          VARCHAR2(10),
-    HOD           VARCHAR2(30),
-    CONSTRAINT pk_1nf PRIMARY KEY (SID, Course)
-);
+| Faculty | Course | Textbook |
+| --- | --- | --- |
+| Ravi | DBMS | Korth |
+| Ravi | DBMS | Navathe |
+| Meena | OS | Silberschatz |
 
--- Step 2
-INSERT INTO StudentCourse_1NF VALUES ('S1','Arun','DBMS','Ravi','9990001','CSE','Dr. Sharma');
+## Step 49
 
--- Step 3
-INSERT INTO StudentCourse_1NF VALUES ('S1','Arun','OS','Meena','9990002','CSE','Dr. Sharma');
+| Column | Type |
+| --- | --- |
+| Faculty | VARCHAR2(30) |
+| FacultyPhone | VARCHAR2(15) |
+| Dept | VARCHAR2(10) |
 
--- Step 4
-INSERT INTO StudentCourse_1NF VALUES ('S2','Bala','DBMS','Ravi','9990001','CSE','Dr. Sharma');
+## Student
 
--- Step 5
-COMMIT;
+| SID | SName |
+| --- | --- |
+| S1 | Arun |
+| S2 | Bala |
 
--- Step 6
-SELECT * FROM StudentCourse_1NF;
+## Course_Faculty
 
--- Step 7
-CREATE TABLE Student (
-    SID    VARCHAR2(10) PRIMARY KEY,
-    SName  VARCHAR2(30)
-);
+| Course | Faculty | FacultyPhone | Dept | HOD |
+| --- | --- | --- | --- | --- |
+| DBMS | Ravi | 9990001 | CSE | Dr. Sharma |
+| OS | Meena | 9990002 | CSE | Dr. Sharma |
 
--- Step 8
-CREATE TABLE Course_Faculty (
-    Course        VARCHAR2(20) PRIMARY KEY,
-    Faculty       VARCHAR2(30),
-    FacultyPhone  VARCHAR2(15),
-    Dept          VARCHAR2(10),
-    HOD           VARCHAR2(30)
-);
+## Enrollment
 
--- Step 9
-CREATE TABLE Enrollment (
-    SID     VARCHAR2(10),
-    Course  VARCHAR2(20),
-    PRIMARY KEY (SID, Course),
-    FOREIGN KEY (SID) REFERENCES Student(SID),
-    FOREIGN KEY (Course) REFERENCES Course_Faculty(Course)
-);
+| SID | Course |
+| --- | --- |
+| S1 | DBMS |
+| S1 | OS |
+| S2 | DBMS |
 
--- Step 10
-INSERT INTO Student VALUES ('S1','Arun');
+## Department
 
--- Step 11
-INSERT INTO Student VALUES ('S2','Bala');
+| Dept | HOD |
+| --- | --- |
+| CSE | Dr. Sharma |
 
--- Step 12
-INSERT INTO Course_Faculty VALUES ('DBMS','Ravi','9990001','CSE','Dr. Sharma');
+## Faculty_Dept
 
--- Step 13
-INSERT INTO Course_Faculty VALUES ('OS','Meena','9990002','CSE','Dr. Sharma');
+| Faculty | FacultyPhone | Dept |
+| --- | --- | --- |
+| Ravi | 9990001 | CSE |
+| Meena | 9990002 | CSE |
 
--- Step 14
-INSERT INTO Enrollment VALUES ('S1','DBMS');
+## Course_3NF
 
--- Step 15
-INSERT INTO Enrollment VALUES ('S1','OS');
+| Course | Faculty |
+| --- | --- |
+| DBMS | Ravi |
+| OS | Meena |
 
--- Step 16
-INSERT INTO Enrollment VALUES ('S2','DBMS');
+## Faculty_Course
 
--- Step 17
-COMMIT;
+| Faculty | Course |
+| --- | --- |
+| Ravi | DBMS |
+| Ravi | OS |
 
--- Step 18
-CREATE TABLE Department (
-    Dept  VARCHAR2(10) PRIMARY KEY,
-    HOD   VARCHAR2(30)
-);
+## Faculty_Language
 
--- Step 19
-CREATE TABLE Faculty_Dept (
-    Faculty       VARCHAR2(30) PRIMARY KEY,
-    FacultyPhone  VARCHAR2(15),
-    Dept          VARCHAR2(10),
-    FOREIGN KEY (Dept) REFERENCES Department(Dept)
-);
+| Faculty | Language |
+| --- | --- |
+| Ravi | English |
+| Ravi | Hindi |
 
--- Step 20
-CREATE TABLE Course_3NF (
-    Course   VARCHAR2(20) PRIMARY KEY,
-    Faculty  VARCHAR2(30),
-    FOREIGN KEY (Faculty) REFERENCES Faculty_Dept(Faculty)
-);
+## Faculty_Course_5NF
 
--- Step 21
-INSERT INTO Department VALUES ('CSE','Dr. Sharma');
+| Faculty | Course |
+| --- | --- |
+| Ravi | DBMS |
+| Meena | OS |
 
--- Step 22
-INSERT INTO Faculty_Dept VALUES ('Ravi','9990001','CSE');
+## Course_Textbook_5NF
 
--- Step 23
-INSERT INTO Faculty_Dept VALUES ('Meena','9990002','CSE');
+| Course | Textbook |
+| --- | --- |
+| DBMS | Korth |
+| DBMS | Navathe |
+| OS | Silberschatz |
 
--- Step 24
-INSERT INTO Course_3NF VALUES ('DBMS','Ravi');
+## Faculty_Textbook_5NF
 
--- Step 25
-INSERT INTO Course_3NF VALUES ('OS','Meena');
+| Faculty | Textbook |
+| --- | --- |
+| Ravi | Korth |
+| Ravi | Navathe |
+| Meena | Silberschatz |
 
--- Step 26
-COMMIT;
 
--- Step 27
-SELECT c.Course, f.Faculty, f.FacultyPhone, f.Dept, d.HOD
-FROM Course_3NF c
-JOIN Faculty_Dept f ON c.Faculty = f.Faculty
-JOIN Department d ON f.Dept = d.Dept;
+## Step 48
 
--- Step 28
-CREATE TABLE Faculty_Course (
-    Faculty  VARCHAR2(30),
-    Course   VARCHAR2(20),
-    PRIMARY KEY (Faculty, Course)
-);
+| TABLE_NAME |
+| --- |
+| COURSE_3NF |
+| COURSE_FACULTY |
+| COURSE_TEXTBOOK_5NF |
+| DEPARTMENT |
+| ENROLLMENT |
+| FACULTY_COURSE |
+| FACULTY_COURSE_5NF |
+| FACULTY_DEPT |
+| FACULTY_LANGUAGE |
+| FACULTY_TEXTBOOK_5NF |
+| STUDENT |
+| STUDENTCOURSE_1NF |
 
--- Step 29
-CREATE TABLE Faculty_Language (
-    Faculty   VARCHAR2(30),
-    Language  VARCHAR2(20),
-    PRIMARY KEY (Faculty, Language)
-);
+## Step 50
 
--- Step 30
-INSERT INTO Faculty_Course VALUES ('Ravi','DBMS');
+| CONSTRAINT_NAME | CONSTRAINT_TYPE | TABLE_NAME |
+| --- | --- | --- |
+| <generated primary-key name> | P | COURSE_3NF |
+| <generated foreign-key name> | R | COURSE_3NF |
+| <generated primary-key name> | P | DEPARTMENT |
+| <generated primary-key name> | P | FACULTY_DEPT |
+| <generated foreign-key name> | R | FACULTY_DEPT |
+| <generated primary-key name> | P | STUDENT |
 
--- Step 31
-INSERT INTO Faculty_Course VALUES ('Ravi','OS');
+## Step 51
 
--- Step 32
-INSERT INTO Faculty_Language VALUES ('Ravi','English');
-
--- Step 33
-INSERT INTO Faculty_Language VALUES ('Ravi','Hindi');
-
--- Step 34
-COMMIT;
-
--- Step 35
-CREATE TABLE Faculty_Course_5NF (
-    Faculty  VARCHAR2(30),
-    Course   VARCHAR2(20),
-    PRIMARY KEY (Faculty, Course)
-);
-
--- Step 36
-CREATE TABLE Course_Textbook_5NF (
-    Course     VARCHAR2(20),
-    Textbook   VARCHAR2(30),
-    PRIMARY KEY (Course, Textbook)
-);
-
--- Step 37
-CREATE TABLE Faculty_Textbook_5NF (
-    Faculty    VARCHAR2(30),
-    Textbook   VARCHAR2(30),
-    PRIMARY KEY (Faculty, Textbook)
-);
-
--- Step 38
-INSERT INTO Faculty_Course_5NF VALUES ('Ravi','DBMS');
-
--- Step 39
-INSERT INTO Faculty_Course_5NF VALUES ('Meena','OS');
-
--- Step 40
-INSERT INTO Course_Textbook_5NF VALUES ('DBMS','Korth');
-
--- Step 41
-INSERT INTO Course_Textbook_5NF VALUES ('DBMS','Navathe');
-
--- Step 42
-INSERT INTO Course_Textbook_5NF VALUES ('OS','Silberschatz');
-
--- Step 43
-INSERT INTO Faculty_Textbook_5NF VALUES ('Ravi','Korth');
-
--- Step 44
-INSERT INTO Faculty_Textbook_5NF VALUES ('Ravi','Navathe');
-
--- Step 45
-INSERT INTO Faculty_Textbook_5NF VALUES ('Meena','Silberschatz');
-
--- Step 46
-COMMIT;
-
--- Step 47
-SELECT fc.Faculty, fc.Course, ct.Textbook
-FROM Faculty_Course_5NF fc
-JOIN Course_Textbook_5NF ct ON fc.Course = ct.Course
-JOIN Faculty_Textbook_5NF ft ON fc.Faculty = ft.Faculty AND ct.Textbook = ft.Textbook;
-
--- Step 48
-SELECT table_name FROM user_tables;
-
--- Step 49
-DESC Faculty_Dept;
-
--- Step 50
-SELECT constraint_name, constraint_type, table_name
-FROM user_constraints
-WHERE table_name IN ('STUDENT','COURSE_3NF','FACULTY_DEPT','DEPARTMENT');
-
--- Step 51
-SELECT a.table_name, a.column_name, c.constraint_type
-FROM user_cons_columns a
-JOIN user_constraints c ON a.constraint_name = c.constraint_name
-WHERE c.constraint_type IN ('P','R')
-ORDER BY a.table_name;
-```
-
-## Result
-
-The program demonstrates normalized table decompositions and reconstructs the supplied sample relationships using joins. The 5NF example assumes the stated join dependency; sample rows alone do not establish it for every possible dataset.
+| TABLE_NAME | COLUMN_NAME | CONSTRAINT_TYPE |
+| --- | --- | --- |
+| COURSE_3NF | COURSE | P |
+| COURSE_3NF | FACULTY | R |
+| COURSE_FACULTY | COURSE | P |
+| COURSE_TEXTBOOK_5NF | COURSE | P |
+| COURSE_TEXTBOOK_5NF | TEXTBOOK | P |
+| DEPARTMENT | DEPT | P |
+| ENROLLMENT | COURSE | P |
+| ENROLLMENT | COURSE | R |
+| ENROLLMENT | SID | P |
+| ENROLLMENT | SID | R |
+| FACULTY_COURSE | COURSE | P |
+| FACULTY_COURSE | FACULTY | P |
+| FACULTY_COURSE_5NF | COURSE | P |
+| FACULTY_COURSE_5NF | FACULTY | P |
+| FACULTY_DEPT | DEPT | R |
+| FACULTY_DEPT | FACULTY | P |
+| FACULTY_LANGUAGE | FACULTY | P |
+| FACULTY_LANGUAGE | LANGUAGE | P |
+| FACULTY_TEXTBOOK_5NF | FACULTY | P |
+| FACULTY_TEXTBOOK_5NF | TEXTBOOK | P |
+| STUDENT | SID | P |
+| STUDENTCOURSE_1NF | COURSE | P |
+| STUDENTCOURSE_1NF | SID | P |

@@ -1,112 +1,75 @@
-# Experiment 7 — Views, sequences, indexes and savepoints
+# Expected output
 
-## Aim
+## Step 9
 
-To create and use a view, sequence, index, and savepoint in Oracle.
+| ROLLNO | NAME | MARKS |
+| --- | --- | --- |
+| 101 | ARUN | 85 |
+| 103 | KUMAR | 78 |
+| 105 | RAHUL | 92 |
 
-## Program
+## Step 11
 
-**Environment:** Oracle Database / SQL*Plus.
-
-Run in a fresh Oracle schema or one without these object names. Sequence values are consumed by each NEXTVAL call, including calls made before an INSERT.
-
-```sql
--- Step 1
-CREATE TABLE STUDENT (
-    ROLLNO NUMBER(5) PRIMARY KEY,
-    NAME VARCHAR2(30),
-    DEPARTMENT VARCHAR2(20),
-    MARKS NUMBER(3)
-);
-
--- Step 2
-INSERT INTO STUDENT VALUES (101, 'ARUN', 'CSE', 85);
-
--- Step 3
-INSERT INTO STUDENT VALUES (102, 'PRIYA', 'ECE', 90);
-
--- Step 4
-INSERT INTO STUDENT VALUES (103, 'KUMAR', 'CSE', 78);
-
--- Step 5
-INSERT INTO STUDENT VALUES (104, 'DIVYA', 'IT', 88);
-
--- Step 6
-INSERT INTO STUDENT VALUES (105, 'RAHUL', 'CSE', 92);
-
--- Step 7
-COMMIT;
-
--- Step 8
-CREATE VIEW CSE_STUDENTS AS
-SELECT ROLLNO, NAME, MARKS
-FROM STUDENT
-WHERE DEPARTMENT = 'CSE';
-
--- Step 9
-SELECT * FROM CSE_STUDENTS;
-
--- Step 10
-DROP VIEW CSE_STUDENTS;
-
--- Step 11
-CREATE SEQUENCE STUDENT_SEQ
-START WITH 106
-INCREMENT BY 1
-NOCACHE
-NOCYCLE;
-
--- Step 12
-SELECT STUDENT_SEQ.NEXTVAL FROM DUAL;
-
--- Step 13
-SELECT STUDENT_SEQ.NEXTVAL FROM DUAL;
-
--- Step 14
-INSERT INTO STUDENT
-VALUES (STUDENT_SEQ.NEXTVAL, 'SNEHA', 'CSE', 89);
-
--- Step 15
-COMMIT;
-
--- Step 16
-SELECT * FROM STUDENT;
-
--- Step 17
-DROP SEQUENCE STUDENT_SEQ;
-
--- Step 18
-CREATE INDEX IDX_STUDENT_NAME
-ON STUDENT(NAME);
-
--- Step 19
-SELECT * FROM STUDENT WHERE NAME = 'ARUN';
-
--- Step 20
-DROP INDEX IDX_STUDENT_NAME;
-
--- Step 21
-INSERT INTO STUDENT VALUES (106, 'MOHAN', 'IT', 80);
-
--- Step 22
-SAVEPOINT SP1;
-
--- Step 23
-INSERT INTO STUDENT VALUES (107, 'LATHA', 'ECE', 87);
-
--- Step 24
-SELECT * FROM STUDENT;
-
--- Step 25
-ROLLBACK TO SP1;
-
--- Step 26
-COMMIT;
-
--- Step 27
-SELECT * FROM STUDENT ORDER BY ROLLNO;
+```text
+Sequence created.
 ```
 
-## Result
+## Step 12
 
-The program demonstrates a filtered view, generated sequence values, an index, and partial transaction rollback using a savepoint.
+| NEXTVAL |
+| --- |
+| 106 |
+
+## Step 13
+
+| NEXTVAL |
+| --- |
+| 107 |
+
+## Step 16
+
+| ROLLNO | NAME | DEPARTMENT | MARKS |
+| --- | --- | --- | --- |
+| 101 | ARUN | CSE | 85 |
+| 102 | PRIYA | ECE | 90 |
+| 103 | KUMAR | CSE | 78 |
+| 104 | DIVYA | IT | 88 |
+| 105 | RAHUL | CSE | 92 |
+| 108 | SNEHA | CSE | 89 |
+
+## Step 17
+
+```text
+Sequence dropped.
+```
+
+## Step 19
+
+| ROLLNO | NAME | DEPARTMENT | MARKS |
+| --- | --- | --- | --- |
+| 101 | ARUN | CSE | 85 |
+
+## Step 24
+
+| ROLLNO | NAME | DEPARTMENT | MARKS |
+| --- | --- | --- | --- |
+| 101 | ARUN | CSE | 85 |
+| 102 | PRIYA | ECE | 90 |
+| 103 | KUMAR | CSE | 78 |
+| 104 | DIVYA | IT | 88 |
+| 105 | RAHUL | CSE | 92 |
+| 108 | SNEHA | CSE | 89 |
+| 106 | MOHAN | IT | 80 |
+| 107 | LATHA | ECE | 87 |
+
+## Step 27
+
+| ROLLNO | NAME | DEPARTMENT | MARKS |
+| --- | --- | --- | --- |
+| 101 | ARUN | CSE | 85 |
+| 102 | PRIYA | ECE | 90 |
+| 103 | KUMAR | CSE | 78 |
+| 104 | DIVYA | IT | 88 |
+| 105 | RAHUL | CSE | 92 |
+| 106 | MOHAN | IT | 80 |
+| 108 | SNEHA | CSE | 89 |

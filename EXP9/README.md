@@ -1,179 +1,99 @@
-# Experiment 9 — Relationships, joins and subqueries
+# Expected output
 
-## Aim
+## Step 11
 
-To create related tables using primary and foreign keys and retrieve information with joins and subqueries.
+| student_id | student_name | dept_name |
+| --- | --- | --- |
+| 101 | Anu | CSE |
+| 102 | Bala | CSE |
+| 103 | Charan | ECE |
+| 104 | Divya | IT |
 
-## Program
+## Step 12
 
-**Environment:** MySQL 8.0.31 or later.
+| student_id | student_name | dept_name |
+| --- | --- | --- |
+| 101 | Anu | CSE |
+| 102 | Bala | CSE |
+| 103 | Charan | ECE |
+| 104 | Divya | IT |
+| 105 | Esha | NULL |
 
-Run once in the experiment database with no existing tables of these names.
+## Step 13
 
-```sql
--- Step 1
-CREATE DATABASE IF NOT EXISTS DBMS_EXP9;
+| dept_id | dept_name | student_name |
+| --- | --- | --- |
+| 10 | CSE | Anu |
+| 10 | CSE | Bala |
+| 20 | ECE | Charan |
+| 30 | IT | Divya |
+| 40 | MECH | NULL |
 
--- Step 2
-USE DBMS_EXP9;
+## Step 14
 
--- Step 3
-CREATE TABLE Department (
-    dept_id INT PRIMARY KEY,
-    dept_name VARCHAR(50) NOT NULL,
-    location VARCHAR(50)
-);
+| student_name | course_name | marks |
+| --- | --- | --- |
+| Anu | DBMS | 88 |
+| Anu | Data Structures | 91 |
+| Bala | DBMS | 76 |
+| Charan | Digital Systems | 84 |
+| Divya | Web Technology | 95 |
 
--- Step 4
-CREATE TABLE Student (
-    student_id INT PRIMARY KEY,
-    student_name VARCHAR(50) NOT NULL,
-    dept_id INT,
-    cgpa DECIMAL(3,2),
-    FOREIGN KEY (dept_id) REFERENCES Department(dept_id)
-);
+## Step 15
 
--- Step 5
-CREATE TABLE Course (
-    course_id INT PRIMARY KEY,
-    course_name VARCHAR(60) NOT NULL,
-    dept_id INT,
-    credits INT,
-    FOREIGN KEY (dept_id) REFERENCES Department(dept_id)
-);
+| student_name | course_name | marks |
+| --- | --- | --- |
+| Anu | DBMS | 88 |
+| Anu | Data Structures | 91 |
+| Charan | Digital Systems | 84 |
+| Divya | Web Technology | 95 |
 
--- Step 6
-CREATE TABLE Enrollment (
-    enroll_id INT PRIMARY KEY,
-    student_id INT,
-    course_id INT,
-    semester INT,
-    marks INT,
-    FOREIGN KEY (student_id) REFERENCES Student(student_id),
-    FOREIGN KEY (course_id) REFERENCES Course(course_id)
-);
+## Step 16
 
--- Step 7
-INSERT INTO Department VALUES
-(10, 'CSE', 'Block A'),
-(20, 'ECE', 'Block B'),
-(30, 'IT',  'Block C'),
-(40, 'MECH','Block D');
+| dept_name | student_name |
+| --- | --- |
+| CSE | Anu |
+| CSE | Bala |
+| ECE | Charan |
+| IT | Divya |
+| MECH | NULL |
 
--- Step 8
-INSERT INTO Student VALUES
-(101, 'Anu',   10, 8.70),
-(102, 'Bala',  10, 7.90),
-(103, 'Charan',20, 8.20),
-(104, 'Divya', 30, 9.10),
-(105, 'Esha',  NULL, 7.50);
+## Step 17
 
--- Step 9
-INSERT INTO Course VALUES
-(501, 'DBMS',       10, 4),
-(502, 'Data Structures', 10, 4),
-(503, 'Digital Systems', 20, 3),
-(504, 'Web Technology', 30, 3);
+| student_id | student_name | cgpa |
+| --- | --- | --- |
+| 101 | Anu | 8.7 |
+| 104 | Divya | 9.1 |
 
--- Step 10
-INSERT INTO Enrollment VALUES
-(1, 101, 501, 5, 88),
-(2, 101, 502, 5, 91),
-(3, 102, 501, 5, 76),
-(4, 103, 503, 5, 84),
-(5, 104, 504, 5, 95);
+## Step 18
 
--- Step 11
-SELECT s.student_id, s.student_name, d.dept_name
-FROM Student s
-INNER JOIN Department d
-    ON s.dept_id = d.dept_id;
+| student_id | student_name |
+| --- | --- |
+| 101 | Anu |
+| 102 | Bala |
 
--- Step 12
-SELECT s.student_id, s.student_name, d.dept_name
-FROM Student s
-LEFT JOIN Department d
-    ON s.dept_id = d.dept_id;
+## Step 19
 
--- Step 13
-SELECT d.dept_id, d.dept_name, s.student_name
-FROM Department d
-LEFT JOIN Student s
-    ON d.dept_id = s.dept_id
-ORDER BY d.dept_id;
+| student_id | student_name |
+| --- | --- |
+| 101 | Anu |
+| 102 | Bala |
 
--- Step 14
-SELECT s.student_name, c.course_name, e.marks
-FROM Enrollment e
-INNER JOIN Student s ON e.student_id = s.student_id
-INNER JOIN Course c ON e.course_id = c.course_id
-ORDER BY s.student_id;
+## Step 20
 
--- Step 15
-SELECT s.student_name, c.course_name, e.marks
-FROM Enrollment e
-JOIN Student s ON e.student_id = s.student_id
-JOIN Course c ON e.course_id = c.course_id
-WHERE e.marks > 80;
+| course_id | course_name | credits |
+| --- | --- | --- |
+| 501 | DBMS | 4 |
+| 502 | Data Structures | 4 |
 
--- Step 16
-SELECT d.dept_name, s.student_name
-FROM Student s
-RIGHT JOIN Department d
-    ON s.dept_id = d.dept_id
-ORDER BY d.dept_id;
+## Step 21
 
--- Step 17
-SELECT student_id, student_name, cgpa
-FROM Student
-WHERE cgpa > (SELECT AVG(cgpa) FROM Student);
+| student_id | student_name | dept_id | cgpa |
+| --- | --- | --- | --- |
+| 101 | Anu | 10 | 8.7 |
 
--- Step 18
-SELECT student_id, student_name
-FROM Student
-WHERE dept_id = (
-    SELECT dept_id
-    FROM Department
-    WHERE dept_name = 'CSE'
-);
+## Step 22
 
--- Step 19
-SELECT student_id, student_name
-FROM Student
-WHERE student_id IN (
-    SELECT student_id
-    FROM Enrollment
-    WHERE course_id = (
-        SELECT course_id
-        FROM Course
-        WHERE course_name = 'DBMS'
-    )
-);
-
--- Step 20
-SELECT course_id, course_name, credits
-FROM Course
-WHERE credits > ANY (
-    SELECT credits
-    FROM Course
-    WHERE dept_id = 20
-);
-
--- Step 21
-SELECT s.student_id, s.student_name, s.dept_id, s.cgpa
-FROM Student s
-WHERE s.cgpa > (
-    SELECT AVG(s2.cgpa)
-    FROM Student s2
-    WHERE s2.dept_id = s.dept_id
-);
-
--- Step 22
-SELECT student_id, student_name, cgpa
-FROM Student
-WHERE cgpa = (SELECT MAX(cgpa) FROM Student);
-```
-
-## Result
-
-The queries combine related tables and retrieve records using inner and outer joins, nested queries, and correlated subqueries.
+| student_id | student_name | cgpa |
+| --- | --- | --- |
+| 104 | Divya | 9.1 |

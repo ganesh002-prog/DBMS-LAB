@@ -1,58 +1,48 @@
-# Experiment 1 — Database creation and information retrieval
+# Expected output
 
-## Aim
+## Step 5
 
-To create a database and table, insert records, and retrieve information using SQL queries.
+| StudentID | StudentName | Department | Age | CGPA |
+| --- | --- | --- | --- | --- |
+| 101 | Anu | CSE | 20 | 8.9 |
+| 102 | Bala | ECE | 21 | 8.5 |
+| 103 | Charles | IT | 20 | 9.1 |
+| 104 | Divya | CSE | 22 | 8.7 |
+| 105 | Esha | AIDS | 21 | 9.2 |
 
-## Program
+## Step 6
 
-**Environment:** MySQL 8.0.31 or later.
+| StudentID | StudentName | Department | Age | CGPA |
+| --- | --- | --- | --- | --- |
+| 101 | Anu | CSE | 20 | 8.9 |
+| 104 | Divya | CSE | 22 | 8.7 |
 
-Run once in the experiment database with no existing tables of these names.
+## Step 7
 
-```sql
--- Step 1
-CREATE DATABASE IF NOT EXISTS DBMS_EXP1;
+| StudentID | StudentName | Department | Age | CGPA |
+| --- | --- | --- | --- | --- |
+| 101 | Anu | CSE | 20 | 8.9 |
+| 103 | Charles | IT | 20 | 9.1 |
+| 105 | Esha | AIDS | 21 | 9.2 |
 
--- Step 2
-USE DBMS_EXP1;
+## Step 8
 
--- Step 3
-CREATE TABLE Student(
-StudentID INT PRIMARY KEY,
-StudentName VARCHAR(30),
-Department VARCHAR(20),
-Age INT,
-CGPA DECIMAL(3,2)
-);
+| StudentID | StudentName | Department | Age | CGPA |
+| --- | --- | --- | --- | --- |
+| 105 | Esha | AIDS | 21 | 9.2 |
+| 103 | Charles | IT | 20 | 9.1 |
+| 101 | Anu | CSE | 20 | 8.9 |
+| 104 | Divya | CSE | 22 | 8.7 |
+| 102 | Bala | ECE | 21 | 8.5 |
 
--- Step 4
-INSERT INTO Student VALUES
-(101,'Anu','CSE',20,8.90),
-(102,'Bala','ECE',21,8.50),
-(103,'Charles','IT',20,9.10),
-(104,'Divya','CSE',22,8.70),
-(105,'Esha','AIDS',21,9.20);
+## Step 9
 
--- Step 5
-SELECT * FROM Student;
+| TotalStudents |
+| --- |
+| 5 |
 
--- Step 6
-SELECT * FROM Student WHERE Department='CSE';
+## Step 10
 
--- Step 7
-SELECT * FROM Student WHERE CGPA>8.8;
-
--- Step 8
-SELECT * FROM Student ORDER BY CGPA DESC;
-
--- Step 9
-SELECT COUNT(*) AS TotalStudents FROM Student;
-
--- Step 10
-SELECT AVG(CGPA) FROM Student;
-```
-
-## Result
-
-The program creates and populates a student table and demonstrates filtering, sorting, counting, and averaging its records.
+| AVG(CGPA) |
+| --- |
+| 8.88 |
